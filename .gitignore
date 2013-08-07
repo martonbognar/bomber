@@ -1,5 +1,8 @@
 bomber.exe
 levels/editor.exe
+*.o
+*.err
+*.out
 
 #################
 ## Eclipse
