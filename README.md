@@ -6,6 +6,6 @@
 
 # Dependencies
 
-* A pascal compiler (I recommend [Free Pascal](http://www.freepascal.org/))
+* A pascal compiler (for example [Free Pascal](http://www.freepascal.org/))
 
-all the readmes in this repo are based on [this](https://github.com/thecookiefactory/thecookiefactoryorg/blob/master/README.md) one, written by Underyx
+Note: all the readmes in this repo are based on [this](https://github.com/thecookiefactory/thecookiefactoryorg/blob/master/README.md) one, written by Underyx
