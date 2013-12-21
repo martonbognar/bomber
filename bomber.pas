@@ -9,6 +9,7 @@ var map: array [1..20, 1..20] of byte;  //osszes pixel tombje
     lx, ly: integer;                    //level up koordinatai
     timer: integer;                     //bomba idomeroje
     bsz: integer;                       //bomba szamlalo
+    i, j: integer;                      //ciklusvaltozok
     prev: byte;                         //bomba visszaallito valtozo
     f: text;                            //map fajlvaltozoja
     filename: string;                   //map fajlneve
@@ -175,6 +176,26 @@ begin
 
 end;
 
+procedure explosioneffect(altx: integer; alty: integer);
+begin
+    if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then begin
+        if ((altx = x) and (alty = y)) then gameover := 1;
+        case map[altx, alty] of
+            0: begin gotoxy(altx, alty); write(' '); end; //nothing
+            1: begin gotoxy(altx, alty); write(#178); end; //solid brick
+            2: begin gotoxy(altx, alty); map[altx, alty] := 0; write(' '); end; //broken brick
+            3: begin gotoxy(altx, alty); write(#3); end; //level exit
+        end;
+    end;
+end;
+
+procedure flash(altx: integer; alty: integer);
+begin
+    if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then begin
+        gotoxy(altx, alty); write(#219);
+    end;
+end;
+
 procedure explode;
 begin
 
@@ -182,197 +203,32 @@ begin
     if (bsz = 1) then begin
         timer := timer - 1;
 
-    //robbanas masodik resze
-    if (prev = 1) then begin
-        altx := bx - 1;
-        alty := by - 1;
-        if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then
-        begin
-            if ((altx = x) and (alty = y)) then gameover := 1;
-            case map[altx, alty] of
-                0: begin gotoxy(altx, alty); write(' '); end; //nothing
-                1: begin gotoxy(altx, alty); write(#178); end; //solid brick
-                2: begin gotoxy(altx, alty); map[altx, alty] := 0; write(' '); end; //broken brick
-                3: begin gotoxy(altx, alty); write(#3); end; //level exit
+        //robbanas masodik resze
+        if (prev = 1) then begin
+            
+            for i:= -1 to 1 do begin
+                for j:= -1 to 1 do begin
+                altx := bx + i;
+                alty := by - j;
+                explosioneffect(altx, alty);
+                end;
             end;
+
+            prev := 0;
+            bsz := 0;
+
         end;
 
-        altx := bx + 1;
-        alty := by + 1;
-        if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then
-        begin
-            if ((altx = x) and (alty = y)) then gameover := 1;
-            case map[altx, alty] of
-                0: begin gotoxy(altx, alty); write(' '); end; //nothing
-                1: begin gotoxy(altx, alty); write(#178); end; //solid brick
-                2: begin gotoxy(altx, alty); map[altx, alty] := 0; write(' '); end; //broken brick
-                3: begin gotoxy(altx, alty); write(#3); end; //level exit
-            end;
-        end;
-
-        altx := bx - 1;
-        alty := by;
-        if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then
-        begin
-            if ((altx = x) and (alty = y)) then gameover := 1;
-            case map[altx, alty] of
-                0: begin gotoxy(altx, alty); write(' '); end; //nothing
-                1: begin gotoxy(altx, alty); write(#178); end; //solid brick
-                2: begin gotoxy(altx, alty); map[altx, alty] := 0; write(' '); end; //broken brick
-                3: begin gotoxy(altx, alty); write(#3); end; //level exit
-            end;
-        end;
-
-        altx := bx + 1;
-        alty := by;
-        if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then
-        begin
-            if ((altx = x) and (alty = y)) then gameover := 1;
-            case map[altx, alty] of
-                0: begin gotoxy(altx, alty); write(' '); end; //nothing
-                1: begin gotoxy(altx, alty); write(#178); end; //solid brick
-                2: begin gotoxy(altx, alty); map[altx, alty] := 0; write(' '); end; //broken brick
-                3: begin gotoxy(altx, alty); write(#3); end; //level exit
-            end;
-        end;
-
-        altx := bx - 1;
-        alty := by + 1;
-        if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then
-        begin
-            if ((altx = x) and (alty = y)) then gameover := 1;
-            case map[altx, alty] of
-                0: begin gotoxy(altx, alty); write(' '); end; //nothing
-                1: begin gotoxy(altx, alty); write(#178); end; //solid brick
-                2: begin gotoxy(altx, alty); map[altx, alty] := 0; write(' '); end; //broken brick
-                3: begin gotoxy(altx, alty); write(#3); end; //level exit
-            end;
-        end;
-
-        altx := bx + 1;
-        alty := by - 1;
-        if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then
-        begin
-            if ((altx = x) and (alty = y)) then gameover := 1;
-            case map[altx, alty] of
-                0: begin gotoxy(altx, alty); write(' '); end; //nothing
-                1: begin gotoxy(altx, alty); write(#178); end; //solid brick
-                2: begin gotoxy(altx, alty); map[altx, alty] := 0; write(' '); end; //broken brick
-                3: begin gotoxy(altx, alty); write(#3); end; //level exit
-            end;
-        end;
-
-        altx := bx;
-        alty := by - 1;
-        if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then
-        begin
-            if ((altx = x) and (alty = y)) then gameover := 1;
-            case map[altx, alty] of
-                0: begin gotoxy(altx, alty); write(' '); end; //nothing
-                1: begin gotoxy(altx, alty); write(#178); end; //solid brick
-                2: begin gotoxy(altx, alty); map[altx, alty] := 0; write(' '); end; //broken brick
-                3: begin gotoxy(altx, alty); write(#3); end; //level exit
-            end;
-        end;
-
-        altx := bx;
-        alty := by + 1;
-        if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then
-        begin
-            if ((altx = x) and (alty = y)) then gameover := 1;
-            case map[altx, alty] of
-                0: begin gotoxy(altx, alty); write(' '); end; //nothing
-                1: begin gotoxy(altx, alty); write(#178); end; //solid brick
-                2: begin gotoxy(altx, alty); map[altx, alty] := 0; write(' '); end; //broken brick
-                3: begin gotoxy(altx, alty); write(#3); end; //level exit
-            end;
-        end;
-
-        altx := bx;
-        alty := by;
-        if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then
-        begin
-            if ((altx = x) and (alty = y)) then gameover := 1;
-            case map[altx, alty] of
-                0: begin gotoxy(altx, alty); write(' '); end; //nothing
-                1: begin gotoxy(altx, alty); write(#178); end; //solid brick
-                2: begin gotoxy(altx, alty); map[altx, alty] := 0; write(' '); end; //broken brick
-                3: begin gotoxy(altx, alty); write(#3); end; //level exit
-            end;
-        end;
-
-        prev := 0;
-        bsz := 0;
-
-    end;
-
-    //robbanas elso resze
+        //robbanas elso resze
         if (timer = 0) then begin
-
-            altx := bx - 1;
-            alty := by - 1;
-            if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then
-            begin
-                gotoxy(altx, alty); write(#219);
+            for i:= -1 to 1 do begin
+                for j:= -1 to 1 do begin
+                altx := bx + i;
+                alty := by - j;
+                flash(altx, alty);
+                end;
             end;
-
-            altx := bx + 1;
-            alty := by + 1;
-            if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then
-            begin
-
-                        gotoxy(altx, alty); write(#219);
-            end;
-
-            altx := bx - 1;
-            alty := by;
-            if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then
-            begin
-                gotoxy(altx, alty); write(#219);
-            end;
-
-            altx := bx + 1;
-            alty := by;
-            if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then
-            begin
-                gotoxy(altx, alty); write(#219);
-            end;
-
-            altx := bx - 1;
-            alty := by + 1;
-            if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then
-            begin
-                gotoxy(altx, alty); write(#219);
-            end;
-
-            altx := bx + 1;
-            alty := by - 1;
-            if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then
-            begin
-                gotoxy(altx, alty); write(#219);
-            end;
-
-            altx := bx;
-            alty := by - 1;
-            if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then
-            begin
-                gotoxy(altx, alty); write(#219);
-            end;
-
-            altx := bx;
-            alty := by + 1;
-            if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then
-            begin
-                gotoxy(altx, alty); write(#219);
-            end;
-
-            altx := bx;
-            alty := by;
-            if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then
-            begin
-                gotoxy(altx, alty); write(#219);
-            end;
-
+            
             map[bx, by] := 0;
             prev := 1;
             gotoxy(x, y);
