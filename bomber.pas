@@ -29,8 +29,8 @@ procedure prepare;
 begin
 
     clrscr;
-        level2 := IntToStr(level);
-        filename := 'levels/level' + level2 + '.lvl';
+    level2 := IntToStr(level);
+    filename := 'levels/level' + level2 + '.lvl';
 
     assign(f, filename);
     reset(f);
@@ -39,17 +39,22 @@ begin
     while (not eof(f)) do begin
 
         readln(f, tempx, c, tempy, c, tempd);
+
         //specialis helyek keresese
         if (tempd = 3) then begin
+
             lx := tempx;
             ly := tempy;
-            end;
+
+        end;
 
         if (tempd = 4) then begin
+
             x := tempx;
             y := tempy;
             tempd := 0;
-            end;
+
+        end;
 
         map[tempx, tempy] := tempd;
 
@@ -78,11 +83,13 @@ begin
             gotoxy(xx, yy);
 
             case map[xx, yy] of
+
                 0: write(' ');
                 1: begin textcolor(black); write(#178); textcolor(white); end;
                 2: begin textcolor(blue); write(#176); textcolor(white); end;
                 3: begin textcolor(red); write(#3); textcolor(white); end;
                 4: begin textcolor(yellow); write(#2); textcolor(white); end;
+
             end;
 
         end;
@@ -118,18 +125,19 @@ begin
 
         c := readkey;
 
-        if (ord(c) = 0) then
-            c := readkey;
+        if (ord(c) = 0) then c := readkey;
 
     end;
 
     deleti;
 
     case c of
+
         #72: begin dx := 0; dy := -1; end;
         #80: begin dx := 0; dy := 1; end;
         #75: begin dx := -1; dy := 0; end;
         #77: begin dx := 1; dy := 0; end;
+
     end;
 
     x := x + dx;
@@ -141,8 +149,10 @@ begin
     if (y = 21) then y := 20;
 
     if (map[x, y] = 1) or (map[x, y] = 2) then begin
+
         x := x - dx;
         y := y - dy;
+
     end;
 
     gotoxy(x, y);
@@ -178,22 +188,33 @@ end;
 
 procedure explosioneffect(altx: integer; alty: integer);
 begin
+
     if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then begin
+
         if ((altx = x) and (alty = y)) then gameover := 1;
+
         case map[altx, alty] of
+
             0: begin gotoxy(altx, alty); write(' '); end; //nothing
             1: begin gotoxy(altx, alty); write(#178); end; //solid brick
             2: begin gotoxy(altx, alty); map[altx, alty] := 0; write(' '); end; //broken brick
             3: begin gotoxy(altx, alty); write(#3); end; //level exit
+
         end;
+
     end;
+
 end;
 
 procedure flash(altx: integer; alty: integer);
 begin
+
     if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then begin
+
         gotoxy(altx, alty); write(#219);
+
     end;
+
 end;
 
 procedure explode;
@@ -205,13 +226,17 @@ begin
 
         //robbanas masodik resze
         if (prev = 1) then begin
-            
+
             for i:= -1 to 1 do begin
+
                 for j:= -1 to 1 do begin
-                altx := bx + i;
-                alty := by - j;
-                explosioneffect(altx, alty);
+
+                    altx := bx + i;
+                    alty := by - j;
+                    explosioneffect(altx, alty);
+
                 end;
+
             end;
 
             prev := 0;
@@ -221,18 +246,25 @@ begin
 
         //robbanas elso resze
         if (timer = 0) then begin
+
             for i:= -1 to 1 do begin
+
                 for j:= -1 to 1 do begin
-                altx := bx + i;
-                alty := by - j;
-                flash(altx, alty);
+
+                    altx := bx + i;
+                    alty := by - j;
+                    flash(altx, alty);
+
                 end;
+
             end;
-            
+
             map[bx, by] := 0;
             prev := 1;
             gotoxy(x, y);
+
         end;
+
     end;
 
 end;
@@ -241,33 +273,48 @@ procedure ending;
 begin
 
     clrscr;
+
     case gameover of
+
         0: writeln('Thanks for playing!');
         1: writeln('Better luck next time!');
         2: begin writeln('Level up!'); level := level + 1; end;
+
     end;
+
     rep := readkey;
 
 end;
 
 begin
-CursorOff;
-textbackground(green);
+
+    CursorOff;
+    textbackground(green);
 
     level := 0;
+
     repeat
+
         prepare;
+
         repeat
+
             moving;
             writi;
             bomb;
             explode;
+
             if (lx = x) and (ly = y) then gameover := 2;
+
             delay(100);
+
         until(c = #27) or (gameover <> 0);
+
         ending;
+
     until(rep = #27);
 
-textbackground(black);
-CursorOn;
+    textbackground(black);
+    CursorOn;
+
 end.
