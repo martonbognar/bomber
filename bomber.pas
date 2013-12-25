@@ -21,7 +21,9 @@ var map: array [1..20, 1..20] of byte;  //osszes pixel tombje
     ccopy: char;                        //beolvasott karakter masolata
     rep: char;                          //meg egy karakter
     level: integer;                     //level szamlalo
-    level2: string;                     //level szamlalo pt2
+
+    backgroundC, characterC, solidbrickC, softbrickC, explodedbrickC, explosionC, heartC, bombC: integer;
+    characterD, solidbrickD, softbrickD, explosionD, heartD, bombD: char;
 
 //procedures
 
@@ -29,8 +31,12 @@ procedure prepare;
 begin
 
     clrscr;
-    level2 := IntToStr(level);
-    filename := 'levels/level' + level2 + '.lvl';
+    filename := 'levels/level' + IntToStr(level) + '.lvl';
+
+    if (not FileExists(filename)) then begin
+        level := 0;
+        filename := 'levels/level' + IntToStr(level) + '.lvl';
+    end;
 
     assign(f, filename);
     reset(f);
@@ -60,6 +66,8 @@ begin
 
     end;
 
+    textcolor(white);
+
     //keret megrajzolasa
     for xx := 1 to 20 do begin
 
@@ -75,6 +83,8 @@ begin
 
     end;
 
+    textcolor(backgroundC);
+
     //objektumok berajzolasa
     for xx := 1 to 20 do begin
 
@@ -85,10 +95,10 @@ begin
             case map[xx, yy] of
 
                 0: write(' ');
-                1: begin textcolor(black); write(#178); textcolor(white); end;
-                2: begin textcolor(blue); write(#176); textcolor(white); end;
-                3: begin textcolor(red); write(#3); textcolor(white); end;
-                4: begin textcolor(yellow); write(#2); textcolor(white); end;
+                1: begin textcolor(solidbrickC); write(solidbrickD); textcolor(backgroundC); end;
+                2: begin textcolor(softbrickC); write(softbrickD); textcolor(backgroundC); end;
+                3: begin textcolor(heartC); write(heartD); textcolor(backgroundC); end;
+                4: begin textcolor(characterC); write(characterD); textcolor(backgroundC); end;
 
             end;
 
@@ -112,7 +122,11 @@ procedure deleti;
 begin
 
     gotoxy(x, y);
-    if (map[x, y] = 5) then write(#15) else write(' ');
+    if (map[x, y] = 5) then begin
+        textcolor(bombC);
+        write(bombD);
+        textcolor(backgroundC);
+    end else write(' ');
 
 end;
 
@@ -163,7 +177,7 @@ procedure writi;
 begin
 
     gotoxy(x, y);
-    textcolor(yellow); write(#2); textcolor(white);
+    textcolor(characterC); write(characterD); textcolor(backgroundC);
     gotoxy(x, y);
 
 end;
@@ -178,7 +192,9 @@ begin
         map[x, y] := 5;
         bx := x;
         by := y;
-        write(#15);
+        textcolor(bombC);
+        write(bombD);
+        textcolor(backgroundC);
         bsz := 1;
         timer := 6;
 
@@ -196,9 +212,9 @@ begin
         case map[altx, alty] of
 
             0: begin gotoxy(altx, alty); write(' '); end; //nothing
-            1: begin gotoxy(altx, alty); write(#178); end; //solid brick
+            1: begin gotoxy(altx, alty); textcolor(solidbrickC); write(solidbrickD); textcolor(backgroundC); end; //solid brick
             2: begin gotoxy(altx, alty); map[altx, alty] := 0; write(' '); end; //broken brick
-            3: begin gotoxy(altx, alty); write(#3); end; //level exit
+            3: begin gotoxy(altx, alty); textcolor(heartC); write(heartD); textcolor(backgroundC); end; //level exit
 
         end;
 
@@ -211,7 +227,8 @@ begin
 
     if ((altx <> 0) and (altx <> 21) and (alty <> 0) and (alty <> 21)) then begin
 
-        gotoxy(altx, alty); write(#219);
+        gotoxy(altx, alty);
+        textcolor(explosionC); write(explosionD); textcolor(backgroundC);
 
     end;
 
@@ -274,6 +291,8 @@ begin
 
     clrscr;
 
+    textcolor(white);
+
     case gameover of
 
         0: writeln('Thanks for playing!');
@@ -282,14 +301,34 @@ begin
 
     end;
 
+    textcolor(backgroundC);
+
     rep := readkey;
 
 end;
 
 begin
 
+// color codes
+backgroundC := 0;       // 0  = black
+characterC := 14;       // 14 = yellow
+solidbrickC := 8;       // 8  = dark gray
+softbrickC := 6;        // 6  = brown
+explodedbrickC := 7;    // 7  = light gray
+explosionC := 15;       // 15 = white
+heartC := 4;            // 4  = red
+bombC := 15;            // 15 = white
+
+// ascii codes
+characterD := #2;
+solidbrickD := #178;
+softbrickD := #176;
+explosionD := #219;
+heartD := #3;
+bombD := #15;
+
     CursorOff;
-    textbackground(green);
+    textbackground(backgroundC);
 
     level := 0;
 
