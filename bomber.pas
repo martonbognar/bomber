@@ -316,7 +316,7 @@ solidbrickC := 8;       // 8  = dark gray
 softbrickC := 6;        // 6  = brown
 explodedbrickC := 7;    // 7  = light gray
 explosionC := 15;       // 15 = white
-heartC := 4;            // 4  = red
+heartC := 12;            // 12  = light red
 bombC := 15;            // 15 = white
 
 // ascii codes
@@ -326,6 +326,15 @@ softbrickD := #176;
 explosionD := #219;
 heartD := #3;
 bombD := #15;
+
+// IMPORTANT: IF YOU ARE NOT RUNNING FROM FREE PASCAL, UNCOMMENT THESE
+// MORE INFO IN THE README
+//characterD := #149;
+//solidbrickD := #35;
+//softbrickD := #35;
+//explosionD := #135;
+//heartD := #43;
+//bombD := #164;
 
     CursorOff;
     textbackground(backgroundC);
